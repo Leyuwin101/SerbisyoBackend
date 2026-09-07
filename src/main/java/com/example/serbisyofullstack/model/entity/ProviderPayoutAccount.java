@@ -1,5 +1,6 @@
 package com.example.serbisyofullstack.model.entity;
 
+import com.example.serbisyofullstack.model.enums.PayoutAccountStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
