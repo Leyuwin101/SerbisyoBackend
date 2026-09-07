@@ -21,7 +21,7 @@ public class ProviderDocument {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "provider_id", nullable = false)
-    private ProviderProfile providerProfile;
+    private ProviderProfile provider;
 
     @Column(name = "type", nullable = false)
     private String type;

@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Setter
 @Entity
@@ -28,4 +31,13 @@ public class CustomerProfile {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "default_address_id")
     private Address defaultAddress;
+
+    @OneToMany(mappedBy = "customer")
+    private List<Booking> bookings = new ArrayList<>();
+
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<FavoriteProvider> favoriteProviders = new ArrayList<>();
+
+    @OneToMany(mappedBy = "customer")
+    private List<Review> reviews = new ArrayList<>();
 }

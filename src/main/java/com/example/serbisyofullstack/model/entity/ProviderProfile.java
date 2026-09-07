@@ -41,4 +41,22 @@ public class ProviderProfile {
 
     @OneToMany(mappedBy = "provider", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProviderDocument> documents = new ArrayList<>();
+
+    @OneToMany(mappedBy = "provider", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Service> services = new ArrayList<>();
+
+    @OneToMany(mappedBy = "provider", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AvailabilitySchedule> availabilitySchedules = new ArrayList<>();
+
+    @OneToMany(mappedBy = "provider", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AvailabilityException> availabilityExceptions = new ArrayList<>();
+
+    @OneToMany(mappedBy = "provider")
+    private List<Review> reviews = new ArrayList<>();
+
+    @OneToMany(mappedBy = "provider")
+    private List<Payout> payouts = new ArrayList<>();
+
+    @OneToOne(mappedBy = "provider")
+    private ProviderPayoutAccount payoutAccount;
 }

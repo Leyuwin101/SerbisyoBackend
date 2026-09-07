@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -44,6 +45,25 @@ public class Booking {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "address_id", nullable = false)
     private Address address;
+
+    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BookingItem> items = new ArrayList<>();
+
+    @OneToOne(mappedBy = "booking")
+    private Quote quote;
+
+    @OneToOne(mappedBy = "booking")
+    private Payment payment;
+
+    @OneToOne(mappedBy = "booking")
+    private Review review;
+
+    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BookingCoupon> coupons = new ArrayList<>();
+
+    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Dispute> disputes = new ArrayList<>();
+
 
     @Column(name = "scheduled_start", nullable = false)
     private LocalDateTime scheduled_start;
