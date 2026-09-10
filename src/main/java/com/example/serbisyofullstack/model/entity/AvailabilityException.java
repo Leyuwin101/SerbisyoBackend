@@ -1,5 +1,6 @@
 package com.example.serbisyofullstack.model.entity;
 
+import com.example.serbisyofullstack.model.enums.ExceptionType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -34,6 +35,10 @@ public class AvailabilityException {
     @Column(name = "available", nullable = false)
     private Boolean available;
 
+    @Column(name = "exception_type")
+    private ExceptionType exceptionType;
+
     @Column(name = "reason")
     private String reason;
+
 }
