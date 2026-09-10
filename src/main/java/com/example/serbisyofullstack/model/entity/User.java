@@ -61,4 +61,20 @@ public class User {
 
 
 
+    /**
+     * Maps this account to its API response representation
+     * (see {@link com.example.serbisyofullstack.dto.response.user.UpdateUserResponse}).
+     */
+    public com.example.serbisyofullstack.dto.response.user.UpdateUserResponse toUpdateUserResponse() {
+        com.example.serbisyofullstack.dto.response.user.UpdateUserResponse response =
+                new com.example.serbisyofullstack.dto.response.user.UpdateUserResponse();
+        com.example.serbisyofullstack.dto.nested.UserSummaryDto user =
+                new com.example.serbisyofullstack.dto.nested.UserSummaryDto();
+        user.setId(userId);
+        user.setEmail(email);
+        user.setPhone(phone);
+        user.setStatus(status);
+        response.setUser(user);
+        return response;
+    }
 }

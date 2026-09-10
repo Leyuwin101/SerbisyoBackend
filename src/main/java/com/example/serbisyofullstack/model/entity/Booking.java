@@ -2,6 +2,7 @@ package com.example.serbisyofullstack.model.entity;
 
 import com.example.serbisyofullstack.model.enums.BookingStatus;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -74,6 +75,9 @@ public class Booking {
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private BookingStatus status;
+
+    @Column(name = "customer_note", length = 2000)
+    private String customerNote;
 
     @Column(name = "quoted_amount", precision = 12, scale = 2)
     private BigDecimal quotedAmount;
