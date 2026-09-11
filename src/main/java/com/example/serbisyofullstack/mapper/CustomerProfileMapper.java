@@ -29,5 +29,5 @@ public interface CustomerProfileMapper extends BaseMapper<CustomerProfile, Void,
     @Mapping(target = "customerProfileId", ignore = true)
     @Mapping(target = "user", ignore = true)
     @Mapping(target = "defaultAddress", ignore = true)
-    void toUpdate(UpdateCustomerProfileRequest request, @MappingTarget CustomerProfile entity);
+    CustomerProfile toUpdate(UpdateCustomerProfileRequest request, @MappingTarget CustomerProfile entity);
 }

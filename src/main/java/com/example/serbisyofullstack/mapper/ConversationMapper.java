@@ -20,6 +20,11 @@ public interface ConversationMapper {
     @Mapping(source = "booking.bookingId", target = "bookingId")
     ConversationSummaryDto toDto(Conversation entity);
 
+    /** Alias used by MessagingServiceImpl for conversation listings. */
+    default ConversationSummaryDto toSummaryDto(Conversation entity) {
+        return toDto(entity);
+    }
+
     @Mapping(target = "conversationId", ignore = true)
     @Mapping(target = "customer", ignore = true)   // from the authenticated principal
     @Mapping(target = "provider", ignore = true)   // resolved by the service

@@ -20,7 +20,6 @@ public interface BookingMapper extends BaseMapper<Booking, CreateBookingRequest,
     @Mapping(source = "customer.customerProfileId", target = "customerId")
     @Mapping(source = "provider.providerProfileId", target = "providerId")
     @Mapping(source = "service.serviceId", target = "serviceId")
-    @Mapping(source = "scheduled_start", target = "scheduledStart")
     @Mapping(target = "status", expression = "java(entity.getStatus() != null ? entity.getStatus().name() : null)")
     BookingSummaryDto toDto(Booking entity);
 
@@ -34,7 +33,6 @@ public interface BookingMapper extends BaseMapper<Booking, CreateBookingRequest,
     @Mapping(target = "quotedAmount", ignore = true)      // set when the provider quotes
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
-    @Mapping(target = "scheduled_start", source = "scheduledStart")
     Booking toEntity(CreateBookingRequest request);
 
     @Override
@@ -47,7 +45,6 @@ public interface BookingMapper extends BaseMapper<Booking, CreateBookingRequest,
     @Mapping(target = "quotedAmount", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
-    @Mapping(target = "scheduled_start", source = "scheduledStart")
     Booking toUpdate(UpdateBookingRequest request, @MappingTarget Booking entity);
 
     /**

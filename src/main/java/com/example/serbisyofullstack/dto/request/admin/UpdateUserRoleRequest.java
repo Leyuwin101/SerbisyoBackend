@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import com.example.serbisyofullstack.model.enums.RoleEnum;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,6 +20,10 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 public class UpdateUserRoleRequest {
+    @Schema(description = "The user whose roles are being replaced.")
+    @NotNull(message = "User id is required")
+    private Long userId;
+
     @Schema(description = "The complete new set of roles; the previous set is discarded.")
     @NotEmpty(message = "At least one role is required")
     private Set<RoleEnum> roles;

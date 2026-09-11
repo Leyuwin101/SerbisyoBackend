@@ -22,6 +22,9 @@ public class Refund {
     @JoinColumn(name = "payment_id", nullable = false)
     private Payment payment;
 
+    @Column(name = "amount", nullable = false, precision = 12, scale = 2)
+    private java.math.BigDecimal amount;
+
     @Column(name = "reason", columnDefinition = "TEXT")
     private String reason;
 

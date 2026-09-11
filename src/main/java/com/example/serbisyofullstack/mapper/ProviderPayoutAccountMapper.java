@@ -20,7 +20,7 @@ public interface ProviderPayoutAccountMapper extends BaseMapper<ProviderPayoutAc
     @Mapping(source = "payoutAccountId", target = "id")
     @Mapping(source = "provider.providerProfileId", target = "providerId")
     @Mapping(source = "gatewayAccountReference", target = "providerReference")
-    @Mapping(target = "readyForPayout", expression = "java(entity.getStatus() == com.example.serbisyofullstack.model.enums.PayoutAccountStatus.VERIFIED)")
+    @Mapping(target = "readyForPayout", expression = "java(entity.getStatus() == com.example.serbisyofullstack.model.enums.PayoutAccountStatus.READY)")
     ProviderPayoutAccountDto toDto(ProviderPayoutAccount entity);
 
     @Override
