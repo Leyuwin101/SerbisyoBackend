@@ -10,7 +10,7 @@ import lombok.Setter;
 @Table(
         name = "addresses",
         indexes = {
-                @Index(name = "idx_addresses_owner", columnList = "owner")
+                @Index(name = "idx_addresses_owner", columnList = "owner_id")
         }
 )
 public class Address {

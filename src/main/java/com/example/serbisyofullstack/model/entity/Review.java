@@ -12,8 +12,8 @@ import java.time.LocalDateTime;
 @Table(
         name = "reviews",
         indexes = {
-                @Index(name = "idx_review_provider", columnList = "provider"),
-                @Index(name = "idx_review_customer", columnList = "customer")
+                @Index(name = "idx_review_provider", columnList = "provider_id"),
+                @Index(name = "idx_review_customer", columnList = "customer_id")
         }
 )
 public class Review {

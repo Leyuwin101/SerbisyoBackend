@@ -7,5 +7,6 @@ import java.util.Optional;
 
 public interface ProviderPayoutAccountRepository extends JpaRepository<ProviderPayoutAccount, Long> {
 
+    @org.springframework.data.jpa.repository.Query("select a from ProviderPayoutAccount a where a.provider.providerProfileId = :providerId")
     Optional<ProviderPayoutAccount> findByProviderId(Long providerId);
 }

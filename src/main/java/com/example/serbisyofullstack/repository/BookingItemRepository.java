@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface BookingItemRepository extends JpaRepository<BookingItem, Long> {
 
+    @org.springframework.data.jpa.repository.Query("select i from BookingItem i where i.booking.bookingId = :bookingId")
     List<BookingItem> findByBookingId(Long bookingId);
 }

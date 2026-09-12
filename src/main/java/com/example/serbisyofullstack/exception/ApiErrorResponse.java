@@ -18,6 +18,8 @@ public class ApiErrorResponse {
 
     private final int status;
     private final String error;
+    /** Machine-readable error code, e.g. VALIDATION_FAILED, ACCESS_DENIED, NOT_FOUND. */
+    private final String code;
     private final String message;
     private final String path;
     private final Instant timestamp;

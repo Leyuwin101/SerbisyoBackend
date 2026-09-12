@@ -92,6 +92,18 @@ public class ServiceCatalogServiceImpl implements ServiceCatalogService {
 
     @Override
     @Transactional(readOnly = true)
+    public Page<ServiceSummaryDto> browseServices(Pageable pageable) {
+        return serviceRepository.findByActiveTrue(pageable).map(serviceMapper::toSummaryDto);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ServiceSummaryDto> searchServices(String keywords, Pageable pageable) {
+        return serviceRepository
+                .findByActiveTrueAndNameContainingIgnoreCase(keywords.trim(), pageable)
+                .map(serviceMapper::toSummaryDto);
+    }
+
+    @Transactional(readOnly = true)
     public Page<ServiceSummaryDto> listOwnServices(Long providerUserId, Pageable pageable) {
         ProviderProfile provider = requireOwnProvider(providerUserId);
         return serviceRepository.findByProviderId(provider.getProviderProfileId(), pageable)
@@ -119,6 +131,8 @@ public class ServiceCatalogServiceImpl implements ServiceCatalogService {
 
     @Override
     @Transactional
+    @org.springframework.cache.annotation.CacheEvict(cacheManager = "cacheManager",
+            cacheNames = com.example.serbisyofullstack.config.CacheConfig.CACHE_CATEGORIES, allEntries = true)
     public CreateServiceCategoryResponse createCategory(CreateServiceCategoryRequest request) {
         ServiceCategory category = categoryMapper.toEntity(request);
         category = categoryRepository.save(category);
@@ -129,6 +143,8 @@ public class ServiceCatalogServiceImpl implements ServiceCatalogService {
 
     @Override
     @Transactional
+    @org.springframework.cache.annotation.CacheEvict(cacheManager = "cacheManager",
+            cacheNames = com.example.serbisyofullstack.config.CacheConfig.CACHE_CATEGORIES, allEntries = true)
     public UpdateServiceCategoryResponse updateCategory(Long categoryId, UpdateServiceCategoryRequest request) {
         ServiceCategory category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
@@ -141,6 +157,9 @@ public class ServiceCatalogServiceImpl implements ServiceCatalogService {
 
     @Override
     @Transactional(readOnly = true)
+    @org.springframework.cache.annotation.Cacheable(cacheManager = "cacheManager",
+            cacheNames = com.example.serbisyofullstack.config.CacheConfig.CACHE_CATEGORIES,
+            key = "#pageable.pageNumber + ':' + #pageable.pageSize + ':' + #pageable.sort")
     public Page<ServiceCategoryDto> listCategories(Pageable pageable) {
         return categoryRepository.findAll(pageable).map(categoryMapper::toDto);
     }

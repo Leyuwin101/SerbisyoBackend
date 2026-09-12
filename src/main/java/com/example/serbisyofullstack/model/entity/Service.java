@@ -12,7 +12,12 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-@Table(name = "services")
+@Table(
+        name = "services",
+        indexes = {
+                @Index(name = "idx_service_provider", columnList = "provider_id"),
+                @Index(name = "idx_service_category", columnList = "category_id, active")
+        })
 public class Service {
 
     @Id

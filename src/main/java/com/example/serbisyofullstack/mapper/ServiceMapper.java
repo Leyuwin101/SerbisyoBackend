@@ -21,6 +21,12 @@ public interface ServiceMapper extends BaseMapper<Service, CreateServiceRequest,
     @Mapping(source = "category.categoryId", target = "categoryId")
     ServiceSummaryDto toDto(Service entity);
 
+    /** Public listing projection — same shape, keeps call sites explicit. */
+    @Mapping(source = "serviceId", target = "id")
+    @Mapping(source = "provider.providerProfileId", target = "providerId")
+    @Mapping(source = "category.categoryId", target = "categoryId")
+    ServiceSummaryDto toSummaryDto(Service entity);
+
     @Override
     @Mapping(target = "serviceId", ignore = true)
     @Mapping(target = "provider", ignore = true)   // from the authenticated provider

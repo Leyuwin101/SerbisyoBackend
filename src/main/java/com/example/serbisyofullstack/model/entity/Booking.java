@@ -67,7 +67,7 @@ public class Booking {
 
 
     @Column(name = "scheduled_start", nullable = false)
-    private LocalDateTime scheduled_start;
+    private LocalDateTime scheduledStart;
 
     @Column(name = "scheduled_end", nullable = false)
     private LocalDateTime scheduledEnd;

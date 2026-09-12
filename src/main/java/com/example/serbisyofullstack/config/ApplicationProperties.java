@@ -18,6 +18,12 @@ public class ApplicationProperties {
     private final Storage storage = new Storage();
     private final Booking booking = new Booking();
 
+    /**
+     * When true (dev only), {@link DevDataSeeder} populates sample data into an
+     * empty database on startup.
+     */
+    private boolean seedEnabled = false;
+
     @Getter
     @Setter
     public static class Security {

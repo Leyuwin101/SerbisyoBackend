@@ -1,5 +1,13 @@
 package com.example.serbisyofullstack.service.impl;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.example.serbisyofullstack.audit.AuditService;
 import com.example.serbisyofullstack.dto.nested.UserSummaryDto;
 import com.example.serbisyofullstack.dto.request.admin.UpdateUserRoleRequest;
@@ -10,7 +18,6 @@ import com.example.serbisyofullstack.mapper.UserMapper;
 import com.example.serbisyofullstack.model.entity.Role;
 import com.example.serbisyofullstack.model.entity.User;
 import com.example.serbisyofullstack.model.entity.UserRole;
-import com.example.serbisyofullstack.model.enums.RoleEnum;
 import com.example.serbisyofullstack.model.enums.Status;
 import com.example.serbisyofullstack.model.enums.VerificationStatus;
 import com.example.serbisyofullstack.repository.ProviderProfileRepository;
@@ -18,17 +25,9 @@ import com.example.serbisyofullstack.repository.RoleRepository;
 import com.example.serbisyofullstack.repository.UserRepository;
 import com.example.serbisyofullstack.repository.UserRoleRepository;
 import com.example.serbisyofullstack.service.AdminService;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Administrative operations. Every action is written to the audit trail with
@@ -96,9 +95,7 @@ public class AdminServiceImpl implements AdminService {
         } catch (IllegalArgumentException ex) {
             throw new ValidationException("Unknown account status: " + status);
         }
-        List<UserSummaryDto> users = userRepository.findByStatus(statusEnum).stream()
-                .map(userMapper::toDto)
-                .toList();
-        return new PageImpl<>(users, pageable, users.size());
+        // DB-side paging (was previously loading all users into memory).
+        return userRepository.findByStatus(statusEnum, pageable).map(userMapper::toDto);
     }
 }

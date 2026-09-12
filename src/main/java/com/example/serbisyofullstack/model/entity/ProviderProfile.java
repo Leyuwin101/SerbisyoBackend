@@ -11,7 +11,12 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-@Table(name = "provider_profiles")
+@Table(
+        name = "provider_profiles",
+        indexes = {
+                @Index(name = "idx_provider_user", columnList = "user_id"),
+                @Index(name = "idx_provider_verification_rating", columnList = "verification_status, average_rating")
+        })
 public class ProviderProfile {
 
     @Id

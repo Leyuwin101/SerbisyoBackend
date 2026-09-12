@@ -1,5 +1,10 @@
 package com.example.serbisyofullstack.service.impl;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.example.serbisyofullstack.dto.nested.AddressDto;
 import com.example.serbisyofullstack.dto.request.address.CreateAddressRequest;
 import com.example.serbisyofullstack.dto.request.address.UpdateAddressRequest;
@@ -10,11 +15,8 @@ import com.example.serbisyofullstack.mapper.AddressMapper;
 import com.example.serbisyofullstack.model.entity.Address;
 import com.example.serbisyofullstack.repository.AddressRepository;
 import com.example.serbisyofullstack.service.AddressService;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Addresses owned by the authenticated user. Ownership is enforced on every
@@ -70,7 +72,7 @@ public class AddressServiceImpl implements AddressService {
     }
 
     private Address loadOwnedAddress(Long ownerUserId, Long addressId) {
-        return addressRepository.findByIdAndOwnerId(addressId, ownerUserId)
+        return addressRepository.findByAddressIdAndOwnerId(addressId, ownerUserId)
                 .orElseThrow(() -> new ResourceNotFoundException("Address not found for the current user"));
     }
 }

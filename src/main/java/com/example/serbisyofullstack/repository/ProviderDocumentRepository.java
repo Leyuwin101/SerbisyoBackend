@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface ProviderDocumentRepository extends JpaRepository<ProviderDocument, Long> {
 
+    @org.springframework.data.jpa.repository.Query("select d from ProviderDocument d where d.provider.providerProfileId = :providerId")
     List<ProviderDocument> findByProviderId(Long providerId);
 
     List<ProviderDocument> findByStatus(DocumentStatus status);

@@ -14,5 +14,5 @@ public interface AddressRepository extends JpaRepository<Address, Long> {
 
     Page<Address> findByOwnerId(Long ownerId, Pageable pageable);
 
-    Optional<Address> findByIdAndOwnerId(Long id, Long ownerId);
+    Optional<Address> findByAddressIdAndOwnerId(Long id, Long ownerId);
 }

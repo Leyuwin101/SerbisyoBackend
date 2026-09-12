@@ -72,9 +72,18 @@ public class AuthServiceImpl implements AuthService {
         user.setStatus(Status.ACTIVE);
         user = userRepository.save(user);
 
+        // SECURITY: clients may only self-assign CUSTOMER or PROVIDER. Elevated
+        // roles (ADMIN/MODERATOR/SUPPORT) can only be granted by an existing
+        // admin via AdminService.updateUserRoles. Anything else in the request
+        // is stripped, so a forged role list cannot create privilege escalation.
         Set<RoleEnum> requested = (request.getRoles() == null || request.getRoles().isEmpty())
                 ? Set.of(RoleEnum.CUSTOMER)
-                : request.getRoles();
+                : request.getRoles().stream()
+                        .filter(r -> r == RoleEnum.CUSTOMER || r == RoleEnum.PROVIDER)
+                        .collect(java.util.stream.Collectors.toSet());
+        if (requested.isEmpty()) {
+            requested = Set.of(RoleEnum.CUSTOMER);
+        }
         for (RoleEnum code : requested) {
             Role role = roleRepository.findByName(code)
                     .orElseThrow(() -> new ResourceNotFoundException("Role not found: " + code));

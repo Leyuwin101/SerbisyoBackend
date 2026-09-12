@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface RefundRepository extends JpaRepository<Refund, Long> {
 
+    @org.springframework.data.jpa.repository.Query("select r from Refund r where r.payment.paymentId = :paymentId")
     List<Refund> findByPaymentId(Long paymentId);
 }

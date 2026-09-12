@@ -1,12 +1,10 @@
 package com.example.serbisyofullstack.search;
 
-import com.example.serbisyofullstack.model.entity.ProviderProfile;
-import com.example.serbisyofullstack.model.enums.VerificationStatus;
-import com.example.serbisyofullstack.repository.ProviderProfileRepository;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.TypedQuery;
-import lombok.RequiredArgsConstructor;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -14,9 +12,14 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import com.example.serbisyofullstack.model.entity.ProviderProfile;
+import com.example.serbisyofullstack.model.enums.VerificationStatus;
+import com.example.serbisyofullstack.repository.ProviderProfileRepository;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
+import lombok.RequiredArgsConstructor;
 
 /**
  * PostgreSQL-backed provider discovery. Filters run in the database via a
@@ -85,8 +88,27 @@ public class PostgresProviderSearchService implements ProviderSearchService {
             query.setParameter("maxPrice", criteria.maxPrice());
         }
 
-        List<ProviderSearchResult> rows = query.getResultList().stream()
-                .map(p -> toResult(p, criteria))
+        List<ProviderProfile> providers = query.getResultList();
+
+        // Batch-fetch the primary address coordinates for all result rows in a
+        // single query instead of one query per provider (N+1 fix).
+        Map<Long, double[]> coordsByUserId = new java.util.HashMap<>();
+        if (criteria.latitude() != null && criteria.longitude() != null && !providers.isEmpty()) {
+            List<Long> ownerIds = providers.stream()
+                    .map(p -> p.getUser().getUserId())
+                    .toList();
+            List<Object[]> coords = entityManager.createQuery(
+                    "select a.ownerId, a.latitude, a.longitude from Address a where a.ownerId in :ownerIds",
+                    Object[].class)
+                    .setParameter("ownerIds", ownerIds)
+                    .getResultList();
+            for (Object[] row : coords) {
+                coordsByUserId.put((Long) row[0], new double[]{(Double) row[1], (Double) row[2]});
+            }
+        }
+
+        List<ProviderSearchResult> rows = providers.stream()
+                .map(p -> toResult(p, criteria, coordsByUserId))
                 .filter(r -> r.distanceKm() == null
                 || criteria.radiusKm() == null
                 || r.distanceKm() <= criteria.radiusKm())
@@ -100,19 +122,13 @@ public class PostgresProviderSearchService implements ProviderSearchService {
         return new PageImpl<>(pageContent, pageable, sorted.size());
     }
 
-    private ProviderSearchResult toResult(ProviderProfile p, ProviderSearchCriteria criteria) {
+    private ProviderSearchResult toResult(ProviderProfile p, ProviderSearchCriteria criteria,
+            Map<Long, double[]> coordsByUserId) {
         Double distance = null;
         if (criteria.latitude() != null && criteria.longitude() != null) {
-            // Approximate distance from the provider's primary address (owner = user id).
-            List<Object[]> coords = entityManager.createQuery(
-                    "select a.latitude, a.longitude from Address a where a.ownerId = :ownerId",
-                    Object[].class)
-                    .setParameter("ownerId", p.getUser().getUserId())
-                    .setMaxResults(1)
-                    .getResultList();
-            if (!coords.isEmpty()) {
-                distance = haversineKm(criteria.latitude(), criteria.longitude(),
-                        (Double) coords.get(0)[0], (Double) coords.get(0)[1]);
+            double[] coords = coordsByUserId.get(p.getUser().getUserId());
+            if (coords != null) {
+                distance = haversineKm(criteria.latitude(), criteria.longitude(), coords[0], coords[1]);
             }
         }
         return new ProviderSearchResult(

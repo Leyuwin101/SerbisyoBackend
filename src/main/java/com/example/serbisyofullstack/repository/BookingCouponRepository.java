@@ -7,7 +7,9 @@ import java.util.Optional;
 
 public interface BookingCouponRepository extends JpaRepository<BookingCoupon, Long> {
 
+    @org.springframework.data.jpa.repository.Query("select c from BookingCoupon c where c.booking.bookingId = :bookingId")
     Optional<BookingCoupon> findByBookingId(Long bookingId);
 
+    @org.springframework.data.jpa.repository.Query("select count(c) > 0 from BookingCoupon c where c.booking.bookingId = :bookingId")
     boolean existsByBookingId(Long bookingId);
 }
